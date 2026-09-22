@@ -1,13 +1,13 @@
 # AceDelta
 
-**面向 Android 分区EROFS镜像的 OTA 差分方案。**
+**面向 Android EROFS分区镜像的 OTA 差分方案。**
 
-AceDelta 提供完整分区EROFS镜像的差分生成与补丁应用功能。在本页列出的 4 款设备、6 组版本升级测试中，相比最优配置的 AOSP 17 `delta_generator`，AceDelta 的差分包缩小 **19.4%–32.8%**，生成速度平均为AOSP的 **3.15 倍**，补丁应用速度为AOSP的 **0.99–1.47 倍**。
+AceDelta 提供完整分区EROFS镜像的差分生成与补丁应用功能。在下列 4 款手机、6 组版本升级测试中，相比最优配置的 AOSP 17 `delta_generator`，AceDelta 的差分包缩小 **19.4%–32.8%**，生成速度平均为AOSP的 **3.15 倍**，补丁应用速度为AOSP的 **0.99–1.47 倍**。
 
 
 ## 基准结果
 
-每组测试均使用同一设备两个版本的官方镜像，覆盖 `super` 中的完整动态分区集合。测试在主机端按镜像分别执行，结果按版本对汇总；两种工具使用完全相同的源镜像和目标镜像。测试包括常规版本更新，以及小米 15 Pro 从 HyperOS 2 / Android 15 到 HyperOS 3 / Android 16 的大版本升级。
+每组测试均使用同一设备两个版本的官方镜像，覆盖完整的分区集合，在PC端按镜像分别执行并汇总。测试包括常规版本更新（间隔2~3个月)，以及小米从Android 15 (HyperOS 2)到Android 16 (HyperOS 3)的大版本升级。
 
 **六组测试的平均差分包缩减为 26.7%，平均生成加速比为 3.15×。** 下表中的差分包大小单位为 MB（10⁶ 字节）。加速比为 AOSP 耗时 ÷ AceDelta 耗时，大于 1 表示 AceDelta 更快。
 
@@ -100,7 +100,7 @@ AceDelta 应用耗时覆盖主机端脚本的完整流程，包括源镜像读�
 | 项目 | 配置 |
 | :--- | :--- |
 | 主机 | 8 核 CPU，32 GiB 内存 |
-| AOSP 基线 | 标签 `android-17.0.0_r1`，`delta_generator` 主机版本，payload minor version 10，启用 `lz4diff` |
+| AOSP 基线 | 标签 `android-17.0.0_r1`，`delta_generator` 主机版本，minor version 10，启用 `lz4diff` |
 | AOSP 可执行文件 | `out/host/linux-x86/bin/delta_generator` |
 | AceDelta 算法 | `acedelta.erofs` |
 | 生成线程 | AOSP 8 线程，AceDelta 8 线程 |
@@ -134,7 +134,7 @@ delta_generator \
 
 **AceDelta PC端差分应用流程：**
 
-详细主机配置与可复现脚本将随评估资料补充。
+详细请参考评估程序脚本。
 
 ## 集成设计
 
