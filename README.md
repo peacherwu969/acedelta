@@ -36,7 +36,10 @@
 
 均使用 8 线程。
 
-</details><details><summary>\*\*展开：补丁应用耗时与内存\*\*</summary>
+</details>
+
+<details>
+<summary><strong>展开：补丁应用耗时与内存</strong></summary>
 
 AceDelta 应用耗时覆盖主机端脚本的完整流程，包括源镜像读取与哈希计算、块级补丁应用、升级时的哈希树与 FEC 重建、尾部还原，以及输出镜像校验。哈希树和 FEC 由独立工具生成，不包含在原始块级补丁应用器中。
 
@@ -50,8 +53,10 @@ AceDelta 应用耗时覆盖主机端脚本的完整流程，包括源镜像读�
 | 努比亚 Z80 Ultra · 16.0.12 → 16.0.16 | 343 | 234 | 770 | 518 |
 
 
+</details>
 
-</details><details><summary>\*\*展开：完整版本号与镜像规模\*\*</summary>
+<details>
+<summary><strong>展开：完整版本号与镜像规模</strong></summary>
 
 | 设备  | 源版本 | 目标版本 | 新镜像总大小（GB） |
 | :--- | :--- | :--- | ---: |
@@ -72,7 +77,8 @@ AceDelta 应用耗时覆盖主机端脚本的完整流程，包括源镜像读�
 - **应用耗时：** 两者均统计到输出完整镜像并完成校验。AceDelta 的优势主要来自更快的哈希树与 FEC 重建。
 - **应用端内存：** 本次 AceDelta 使用 512 MB LZMA 窗口，各组峰值 RSS 为 518 MB。改用 256 MB 窗口时，同一测试集的峰值 RSS 为 270–330 MB，差分包增大 0.4%–3%，具体取决于数据。
 
-<details><summary>\*\*展开：EROFS LZ4 重压缩修补统计\*\*</summary>
+<details>
+<summary><strong>展开：EROFS LZ4 重压缩修补统计</strong></summary>
 
 两种工具均对 EROFS LZ4 数据进行重压缩。如果压缩结果无法逐字节还原目标压缩簇，则需要额外的小补丁修正;小补丁一般不超过几百字节，对补丁总大小影响不大，但是比较影响应用时间。AceDelta所需的小补丁总数显著小于AOSP：
 
