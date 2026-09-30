@@ -4,7 +4,7 @@
 
 相比最优配置的安卓开源代码(AOSP 17) ，AceDelta 的差分包平均缩小 **超三分之一**，差分速度是AOSP的 **2.5 倍**。
 
-## 基准结果
+## 评测结果（对照AOSP）
 
 下面每组测试均使用同一手机两个版本的官方镜像，主要是常规版本更新（间隔2~3个月)，也包含了小米从Android 15到16 (HyperOS 2到3)的大版本升级。
 
@@ -37,6 +37,21 @@
 大致上，升级单线程速度比AOSP略慢10%；而多线程比AOSP快20%，代价是更多的内存使用。
 
 
+# EROFS 重压缩性能比较
+
+和AOSP一样，AceDelta也需要对EROFS LZ4 数据进行重压缩。如果压缩结果无法逐字节还原目标数据，则需要额外的小补丁修正;小补丁一般不超过几百字节，对补丁总大小影响不大，但是会影响总体升级时间。AceDelta所需的小补丁总数显著小于AOSP：
+
+| 设备 / 升级版本 | AOSP 小补丁总数 | AceDelta 小补丁总数 |
+| :--- | ---: | ---: |
+| OnePlus 15 · A.22 → A.27 | 310 | 103 |
+| OPPO Find X8 Pro · C.76 → C.79 | 275 | 96  |
+| 小米 15 Pro · 2.0.105 → 2.0.214 | 0   | 0   |
+| 小米 15 Pro · 3.0.3 → 3.0.7 | 141 | 37  |
+| 小米 15 Pro · 2.0.214 → 3.0.3 | 241 | 48  |
+| 努比亚 Z80 Ultra · 16.0.12 → 16.0.16 | 145 | 43  |
+
+
+
 <details>
 <summary><strong>展开：评测镜像详情</strong></summary>
 
@@ -56,50 +71,27 @@
 
 </details>
 
-## 统计方法与内存配置
-
-- **差分包大小：** AOSP 统计各受测分区完整 `update_engine` payload 的大小之和；AceDelta 统计各受测分区补丁目录中 `d`、`meta.txt` 和 `footer.az` 的文件大小之和，覆盖块级差分数据、元数据与压缩后的尾部信息。升级时，两者均在应用阶段重建哈希树和FEC。
-- **应用耗时：** 两者均统计到输出完整镜像并完成校验。AceDelta 的优势主要来自更快的哈希树与 FEC 重建。
-- **应用端内存：** 本次 AceDelta 使用 512 MB LZMA 窗口，各组峰值 RSS 为 518 MB。改用 256 MB 窗口时，同一测试集的峰值 RSS 为 270–330 MB，差分包增大 0.4%–3%，具体取决于数据。
 
 <details>
-<summary><strong>展开：EROFS LZ4 重压缩修补统计</strong></summary>
+<summary><strong>展开：测试方法/流程</strong></summary>
 
-两种工具均对 EROFS LZ4 数据进行重压缩。如果压缩结果无法逐字节还原目标压缩簇，则需要额外的小补丁修正;小补丁一般不超过几百字节，对补丁总大小影响不大，但是比较影响应用时间。AceDelta所需的小补丁总数显著小于AOSP：
-
-| 设备 / 升级版本 | AOSP 小补丁总数 | AceDelta 小补丁总数 |
-| :--- | ---: | ---: |
-| OnePlus 15 · A.22 → A.27 | 310 | 103 |
-| OPPO Find X8 Pro · C.76 → C.79 | 275 | 96  |
-| 小米 15 Pro · 2.0.105 → 2.0.214 | 0   | 0   |
-| 小米 15 Pro · 3.0.3 → 3.0.7 | 141 | 37  |
-| 小米 15 Pro · 2.0.214 → 3.0.3 | 241 | 48  |
-| 努比亚 Z80 Ultra · 16.0.12 → 16.0.16 | 145 | 43  |
-
-
-
-</details>
-
-## 测试方法
 
 | 项目  | 配置  |
 | :--- | :--- |
-| 主机  | 8 核 CPU，32 GiB 内存 |
-| AOSP 基线 | 标签 `android-17.0.0_r1`，`delta_generator` 主机版本，minor version 10，启用 `lz4diff` |
+| 主机  | 普通火山云节点；8 核 CPU，32 GiB 内存 |
+| AOSP 基线 | 标签 `android-17.0.0_r1`，`delta_generator` PC/x64版本，minor version 10，启用 `lz4diff` |
 | AOSP 可执行文件 | `out/host/linux-x86/bin/delta_generator` |
-| AceDelta 算法 | `acedelta.erofs` |
-| 生成线程 | AOSP 8 线程，AceDelta 8 线程 |
-| AceDelta 块级应用器 | `blockpatch.erofs`，单线程，LZMA 窗口 512 MB |
-| AceDelta 重建工具 | 独立的 `gen_hash` 与 `gen_fec` 二进制 |
+| 差分线程 | AOSP 8 线程；AceDelta 8 线程 |
+| AceDelta Verity重建工具 | 独立实现的 `gen_hash` 与 `gen_fec` 程序 |
 | 测试范围 | 主机端逐镜像生成、应用与输出校验；未进行设备端完整 OTA 验证 |
 
-AOSP 按分区分别调用。以下命令中的 `old`、`new` 分别为源镜像和目标镜像路径。
+AOSP PC测试流程：
 
 **生成差分包：**
 
 ```bash
 delta_generator \
-  -out_file=dd \
+  -out_file=<patch_file> \
   -partition_names=0 \
   -new_partitions="$new" \
   -old_partitions="$old" \
@@ -111,24 +103,25 @@ delta_generator \
 
 ```bash
 delta_generator \
-  -in_file=dd \
+  -in_file=<patch_file> \
   -partition_names=0 \
-  -new_partitions=nn \
+  -new_partitions=<new_output_image> \
   -old_partitions="$old"
 ```
 
-**AceDelta PC端差分应用流程：**
+**AceDelta PC测试流程：**
 
-详细请参考评估程序脚本。
+详细请参考评估程序。
+
+</details>
+
 
 ## 集成设计
 
-AceDelta 面向 Android OTA 链路中的差分生成与补丁应用环节。目前仅完成主机端逐镜像测试；`update_engine` 与 Virtual A/B 的设备端集成及完整 OTA 流程尚未验证。以下为面向设备端的集成设计。
+AceDelta 面向 Android OTA 链路中的差分生成与补丁应用环节。
 
-- **块设备接口：** 设计上由应用端读取源 slot 的块设备及 operation 对应的 extents，按目标块顺序输出，每个目标块写入一次，不依赖设备端文件系统访问。设备端避免额外补丁中间文件是集成目标；当前主机测试脚本使用中间镜像及独立的哈希树、FEC 文件。
-- **update_engine / Virtual A/B：** 集成方式是在 `update_engine` 中增加 operation 类型，并通过 COW writer 对接 Virtual A/B。该方式需要相应的集成改动。
-- **流式与分段：** 差分包支持流式读取。生成端可将其划分为独立解码的 operation，以适配逐 operation 缓冲和恢复；64 MB 分段配置下，测得的包大小代价约为 5%。设备端恢复流程仍需在集成后验证。
-- **Verity：** 当前主机流程根据补丁元数据调用独立的 `gen_hash` 和 `gen_fec` 工具。设备端可考虑集成相应重建功能，或对接 `update_engine` 的 `VerityWriter`；具体实现仍需集成与验证。
+- **块设备接口：** 设备应用时，AceDelta以块为单位写入数据，可以方便的和主流VAB的`update_engine` 中 COW writer 集成对接。
+- **Verity：** 目前是调用独立实现的 `gen_hash` 和 `gen_fec` 工具重构Verity数据。设备端可考虑集成相应重建功能，或对接 `update_engine` 的 `VerityWriter`。
 
 ## 评估与商业授权
 
