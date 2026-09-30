@@ -21,7 +21,8 @@
 | 努比亚 Z80 Ultra · 16.0.12 → 16.0.16 | 767.9 | 514.7 | **33.0%** | 3.0x |
 | Realme GT8 Pro · 16.0.7 → 16.0.9 | 1268.9 | 878.1 | **30.8%** | 2.3x |
 
-<details><summary>\*\*展开：生成耗时与内存\*\*</summary>
+<details>
+<summary><strong>展开：生成耗时与内存</strong></summary>
 
 耗时单位为秒，RSS 为进程峰值驻留内存。
 
