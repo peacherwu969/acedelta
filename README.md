@@ -37,9 +37,9 @@
 大致上，升级单线程速度比AOSP略慢10%；而多线程比AOSP快20%，代价是更多的内存使用。
 
 
-# EROFS 重压缩性能比较
+### EROFS 重压缩性能比较
 
-和AOSP一样，AceDelta也需要对EROFS LZ4 数据进行重压缩。如果压缩结果无法逐字节还原目标数据，则需要额外的小补丁修正;小补丁一般不超过几百字节，对补丁总大小影响不大，但是会影响总体升级时间。AceDelta所需的小补丁总数显著小于AOSP：
+和AOSP一样，AceDelta也需要对EROFS镜像的LZ4 数据进行重压缩。如果压缩结果无法逐字节还原目标数据，则需要额外的小补丁修正;小补丁一般不超过几百字节，对补丁总大小影响不大，但是会影响总体升级时间。AceDelta所需的小补丁总数显著小于AOSP：
 
 | 设备 / 升级版本 | AOSP 小补丁总数 | AceDelta 小补丁总数 |
 | :--- | ---: | ---: |
@@ -121,12 +121,12 @@ delta_generator \
 AceDelta 面向 Android OTA 链路中的差分生成与补丁应用环节。
 
 - **块设备接口：** 设备应用时，AceDelta以块为单位写入数据，可以方便的和主流VAB的`update_engine` 中 COW writer 集成对接。
-- **Verity：** 目前是调用独立实现的 `gen_hash` 和 `gen_fec` 工具重构Verity数据。设备端可考虑集成相应重建功能，或对接 `update_engine` 的 `VerityWriter`。
+- **Verity：** 目前是调用独立实现的 `gen_hash` 和 `gen_fec` 工具重构Verity数据。设备端可考虑集成相应重建功能，或对接 `update_engine` 原生的 `VerityWriter`。
 
 ## 评估与商业授权
 
-Linux x86_64 评估版差分生成器、补丁应用器与测试脚本计划通过 **Releases** 提供，评估二进制计划免费提供。当前尚无可下载的评估版本。
+本项目免费提供Linux x86_64评估版差分生成、补丁应用程序。
 
-商业生成器与应用端 SDK 按 OEM / 设备型号授权。应用端 SDK 包括静态库与头文件；源代码托管及 NDA 下的源码交付安排可单独沟通。
+商业差分生成程序与应用端 SDK 按 OEM / 设备型号授权。应用端 SDK 包括静态库与头文件、源代码托管及 NDA 下的源码交付安排可单独沟通。
 
 联系：[peacherwu969@gmail.com](mailto:peacherwu969@gmail.com)
