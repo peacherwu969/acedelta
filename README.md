@@ -2,13 +2,13 @@
 
 **高效的Android EROFS分区镜像 OTA 差分方案**
 
-相比最优配置的安卓开源代码(AOSP 17) ，AceDelta 的差分包平均缩小 **超三分之一**，差分速度是AOSP的 **2.5 倍**。
+相比最优配置的安卓开源代码(AOSP 17) ，AceDelta 的差分包平均减小 **超三分之一**，差分速度是AOSP的 **2.5 倍**。
 
 ## 评测结果（对照AOSP）
 
 下面每组测试均使用同一手机两个版本的官方镜像，主要是常规版本更新（间隔2~3个月)，也包含了小米从Android 15到16 (HyperOS 2到3)的大版本升级。
 
-**五部手机、七组测试的总差分包缩减为 35.7%，总差分加速比为 2.5×。** 差分包大小单位为 MB；加速比为 AOSP 耗时 ÷ AceDelta 耗时：
+**五部手机、七组测试的总差分包减小 35.7%，总差分加速比为 2.5×。** 差分包大小单位为 MB；加速比为 AOSP 耗时 ÷ AceDelta 耗时：
 
 
 | 设备 / 升级版本 | AOSP 包大小 | AceDelta 包大小 | 包大小缩减 | 生成加速比 |
@@ -49,7 +49,7 @@
 | 小米 15 Pro · 3.0.3 → 3.0.7 | 141 | 37  |
 | 小米 15 Pro · 2.0.214 → 3.0.3 | 241 | 48  |
 | 努比亚 Z80 Ultra · 16.0.12 → 16.0.16 | 145 | 43  |
-
+| Realme GT8 Pro · 16.0.7 → 16.0.9 | 273|96|
 
 
 <details>
@@ -82,7 +82,7 @@
 | AOSP 基线 | 标签 `android-17.0.0_r1`，`delta_generator` PC/x64版本，minor version 10，启用 `lz4diff` |
 | AOSP 可执行文件 | `out/host/linux-x86/bin/delta_generator` |
 | 差分线程 | AOSP 8 线程；AceDelta 8 线程 |
-| AceDelta Verity重建工具 | 独立实现的 `gen_hash` 与 `gen_fec` 程序 |
+| AceDelta Verity重建工具 | 独立实现的重建程序 |
 | 测试范围 | 主机端逐镜像生成、应用与输出校验；未进行设备端完整 OTA 验证 |
 
 AOSP PC测试流程：
@@ -91,7 +91,7 @@ AOSP PC测试流程：
 
 ```bash
 delta_generator \
-  -out_file=<patch_file> \
+  -out_file=PATCH.BIN \
   -partition_names=0 \
   -new_partitions="$new" \
   -old_partitions="$old" \
@@ -103,9 +103,9 @@ delta_generator \
 
 ```bash
 delta_generator \
-  -in_file=<patch_file> \
+  -in_file=PATCH.BIN \
   -partition_names=0 \
-  -new_partitions=<new_output_image> \
+  -new_partitions=NEW.IMG \
   -old_partitions="$old"
 ```
 
@@ -121,7 +121,7 @@ delta_generator \
 AceDelta 面向 Android OTA 链路中的差分生成与补丁应用环节。
 
 - **块设备接口：** 设备应用时，AceDelta以块为单位写入数据，可以方便的和主流VAB的`update_engine` 中 COW writer 集成对接。
-- **Verity：** 目前是调用独立实现的 `gen_hash` 和 `gen_fec` 工具重构Verity数据。设备端可考虑集成相应重建功能，或对接 `update_engine` 原生的 `VerityWriter`。
+- **Verity：** 目前是调用独立实现的程序重建Verity数据。设备端可考虑集成相应重建功能，或对接 `update_engine` 原生的 `VerityWriter`。
 
 ## 评估与商业授权
 
