@@ -1,5 +1,7 @@
 # AceDelta
 
+**简体中文** | [English](README.en.md)
+
 **高效的Android EROFS分区镜像 OTA 差分方案**
 
 相比最优配置的安卓开源代码(AOSP 17) ，AceDelta 的差分包平均减小 **超三分之一**，差分速度是AOSP的 **2.5 倍**。
