@@ -4,13 +4,13 @@
 
 **Efficient OTA delta generation for Android EROFS partition images**
 
-Compared with the Android Open Source Project (AOSP 17) in its best-performing configuration, AceDelta produces patches that are **more than one third smaller** on average and generates them **2.5× as fast**.
+Compared with the Android Open Source Project 17, AceDelta produces patches that are **more than one third smaller** on average and generation is **2.5× as fast**.
 
 ## Benchmark results against AOSP
 
-Each test uses official images from two firmware versions for the same phone. Most cases are routine updates with a gap of 2–3 months; the tests also include a major Xiaomi upgrade from Android 15 to Android 16 (HyperOS 2 to HyperOS 3).
+Each test uses official images from two firmware versions for the same phone. Most test cases are routine updates with a gap of 2–3 months; also included is a major Xiaomi upgrade from Android 15 to Android 16 (HyperOS 2 to HyperOS 3).
 
-**Across seven test cases on five phones, AceDelta reduces the total patch size by 35.7% and achieves an overall patch-generation speedup of 2.5×.** Patch sizes are in MB. Generation speedup is calculated as AOSP time ÷ AceDelta time.
+**Across seven test cases on five phones, AceDelta reduces the total patch size by 35.7% and achieves an overall generation speedup of 2.5×.** Patch sizes are in MB. Generation speedup is calculated as AOSP time ÷ AceDelta time.
 
 | Device / Update | AOSP patch size | AceDelta patch size | Size reduction | Generation speedup |
 | :--- | ---: | ---: | ---: | ---: |
@@ -22,7 +22,7 @@ Each test uses official images from two firmware versions for the same phone. Mo
 | Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 767.9 | 514.7 | **33.0%** | 3.0x |
 | Realme GT8 Pro · 16.0.7 → 16.0.9 | 1268.9 | 878.1 | **30.8%** | 2.3x |
 
-Patch application performance in PC-based tests is comparable to or slightly faster than AOSP. The following table shows application time in seconds and peak resident memory usage (RSS) in MB.
+Patch application performance (on PC) is comparable to or slightly faster than AOSP. The following table shows application time in seconds and peak resident memory usage (RSS) in MB.
 
 | Device / Update | AOSP | AceDelta (1 thread) | AceDelta (multiple threads) | &nbsp; | AOSP RSS | AceDelta RSS (1 thread) | AceDelta RSS (multiple threads) |
 | :--- | ---: | ---: | ---: | :---: | ---: | ---: | ---: |
@@ -35,11 +35,11 @@ Patch application performance in PC-based tests is comparable to or slightly fas
 | Realme GT8 Pro · 16.0.7 → 16.0.9 | 428.8 | 490.1 | 402.9 | | 876 | 630 | 1398 |
 | **Average** | **381** | **413** | **319** | | **739** | **544** | **1402** |
 
-With one thread, AceDelta applies patches roughly 10% slower than AOSP. With multiple threads, it is roughly 20% faster, at the cost of higher memory usage.
+With single thread, AceDelta applies roughly 10% slower than AOSP. With multiple threads, it is roughly 20% faster, at the cost of higher memory usage.
 
 ### EROFS recompression performance
 
-Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. These corrective patches are typically no more than a few hundred bytes each, so they have little impact on total patch size, but they do affect overall patch application time. AceDelta requires significantly fewer corrective patches than AOSP:
+Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. These corrective patches are typically no more than a few hundred bytes each, so little impact on total patch size, but they do affect overall patch application time. AceDelta requires significantly fewer corrective patches than AOSP:
 
 | Device / Update | AOSP corrective patches | AceDelta corrective patches |
 | :--- | ---: | ---: |
@@ -122,7 +122,7 @@ AceDelta targets patch generation and application within the Android OTA workflo
 
 ## Evaluation and commercial licensing
 
-This project provides free Linux x86_64 [evaluation tools](https://github.com/peacherwu969/acedelta/releases/latest) for patch generation and application.
+This project provides free Linux [evaluation tools](https://github.com/peacherwu969/acedelta/releases/latest) for patch generation and application.
 
 The commercial patch generator and device-side SDK are licensed per OEM / device model. The device-side SDK includes static libraries and headers. Source code escrow and source code delivery under an NDA can be discussed separately.
 

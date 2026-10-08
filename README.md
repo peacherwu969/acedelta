@@ -113,7 +113,7 @@ delta_generator \
 
 **AceDelta PC测试流程：**
 
-详细请参考评估程序。
+详细请参考[评估程序](https://github.com/peacherwu969/acedelta/releases/latest) 。
 
 </details>
 
@@ -127,7 +127,7 @@ AceDelta 面向 Android OTA 链路中的差分生成与补丁应用环节。
 
 ## 评估与商业授权
 
-本项目免费提供Linux x86_64评估版差分生成、补丁应用程序。
+本项目免费提供Linux [评估版差分生成、补丁应用程序](https://github.com/peacherwu969/acedelta/releases/latest) 。
 
 商业差分生成程序与应用端 SDK 按 OEM / 设备型号授权。应用端 SDK 包括静态库与头文件、源代码托管及 NDA 下的源码交付安排可单独沟通。
 
