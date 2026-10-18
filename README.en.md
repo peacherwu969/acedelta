@@ -22,13 +22,13 @@ Each test uses official images from two firmware versions for the same phone. Mo
 | Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 767.9 | 514.7 | **33.0%** | 3.0x |
 | Realme GT8 Pro · 16.0.7 → 16.0.9 | 1268.9 | 878.1 | **30.8%** | 2.3x |
 
-Apply time and peak memory below are PC-simulated, averaged over the seven pairs. Roughly, single-threaded AceDelta is about 5% slower than AOSP, while multi-threaded is about 20% faster with higher memory use:
+Apply time and peak memory below are PC-simulated, averaged over the seven pairs. Roughly, single-threaded AceDelta is about 5% slower than AOSP (single-threaded), while 2-threaded is about 20% faster:
 
 
-| | AOSP | AceDelta (single-thread) | AceDelta (multi-thread) | 
+| | AOSP | AceDelta (single-thread) | AceDelta (2-thread) | 
 | :--- | ---: | ---: | ---: |
 | Apply time (s)| 381|400|306|
-| RSS (MB) |739|544|1402|
+| RSS (MB) |739|544|577|
 
 
 ### EROFS recompression performance
