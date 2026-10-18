@@ -22,34 +22,28 @@ Each test uses official images from two firmware versions for the same phone. Mo
 | Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 767.9 | 514.7 | **33.0%** | 3.0x |
 | Realme GT8 Pro · 16.0.7 → 16.0.9 | 1268.9 | 878.1 | **30.8%** | 2.3x |
 
-Patch application performance (on PC) is comparable to or slightly faster than AOSP. The following table shows application time in seconds and peak resident memory usage (RSS) in MB.
+Apply time and peak memory below are PC-simulated, averaged over the seven pairs. Roughly, single-threaded AceDelta is about 5% slower than AOSP, while multi-threaded is about 20% faster with higher memory use:
 
-| Device / Update | AOSP | AceDelta (1 thread) | AceDelta (multiple threads) | &nbsp; | AOSP RSS | AceDelta RSS (1 thread) | AceDelta RSS (multiple threads) |
-| :--- | ---: | ---: | ---: | :---: | ---: | ---: | ---: |
-| OnePlus 15 · A.22 → A.27 | 385.3 | 501.6 | 394.8 | | 886 | 530 | 1107 |
-| OPPO Find X8 Pro · C.76 → C.79 | 331.9 | 426.4 | 334.7 | | 714 | 530 | 1375 |
-| Xiaomi 15 Pro · 2.0.105 → 2.0.214 | 380.3 | 369.9 | 270.2 | | 654 | 530 | 1438 |
-| Xiaomi 15 Pro · 3.0.3 → 3.0.7 | 355.4 | 337.3 | 252.8 | | 607 | 530 | 1482 |
-| Xiaomi 15 Pro · 2.0.214 → 3.0.3 | 440.0 | 447.4 | 334.1 | | 647 | 530 | 1571 |
-| Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 342.5 | 316.9 | 242.2 | | 788 | 530 | 1444 |
-| Realme GT8 Pro · 16.0.7 → 16.0.9 | 428.8 | 490.1 | 402.9 | | 876 | 630 | 1398 |
-| **Average** | **381** | **413** | **319** | | **739** | **544** | **1402** |
 
-With single thread, AceDelta applies roughly 10% slower than AOSP. With multiple threads, it is roughly 20% faster, at the cost of higher memory usage.
+| | AOSP | AceDelta (single-thread) | AceDelta (multi-thread) | 
+| :--- | ---: | ---: | ---: |
+| Apply time (s)| 381|400|306|
+| RSS (MB) |739|544|1402|
+
 
 ### EROFS recompression performance
 
-Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. These corrective patches are typically no more than a few hundred bytes each, so little impact on total patch size, but they do affect overall patch application time. AceDelta requires significantly fewer corrective patches than AOSP:
+Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. This hurts payload size, generation time and apply time alike. As of AceDelta 1.1, recompression reproduces the target exactly on every test case; no fixups are needed.
 
-| Device / Update | AOSP corrective patches | AceDelta corrective patches |
-| :--- | ---: | ---: |
-| OnePlus 15 · A.22 → A.27 | 310 | 103 |
-| OPPO Find X8 Pro · C.76 → C.79 | 275 | 96 |
-| Xiaomi 15 Pro · 2.0.105 → 2.0.214 | 0 | 0 |
-| Xiaomi 15 Pro · 3.0.3 → 3.0.7 | 141 | 37 |
-| Xiaomi 15 Pro · 2.0.214 → 3.0.3 | 241 | 48 |
-| Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 145 | 43 |
-| Realme GT8 Pro · 16.0.7 → 16.0.9 | 273 | 96 |
+| Device / Update | AOSP corrective patch count |
+| :--- | ---: |
+| OnePlus 15 · A.22 → A.27 | 310 |
+| OPPO Find X8 Pro · C.76 → C.79 | 275 |
+| Xiaomi 15 Pro · 2.0.105 → 2.0.214 | 0 |
+| Xiaomi 15 Pro · 3.0.3 → 3.0.7 | 141 |
+| Xiaomi 15 Pro · 2.0.214 → 3.0.3 | 241 |
+| Nubia Z80 Ultra · 16.0.12 → 16.0.16 | 145 |
+| Realme GT8 Pro · 16.0.7 → 16.0.9 | 273 |
 
 <details>
 <summary><strong>Expand: benchmark image details</strong></summary>
