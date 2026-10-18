@@ -33,8 +33,7 @@ Apply time and peak memory below are PC-simulated, averaged over the seven pairs
 
 ### EROFS recompression performance
 
-Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. This hurts payload size, generation time and apply time alike. As of AceDelta 1.1, recompression reproduces the target exactly on every test case; no fixups are needed.
-
+Like AOSP, AceDelta needs to recompress LZ4 data in EROFS images. If recompression does not reproduce the target data byte for byte, a small corrective patch is required. This hurts payload size, generation time and apply time. As of AceDelta 1.1, recompression reproduces the target exactly on every test case; no corrections are needed.
 | Device / Update | AOSP corrective patch count |
 | :--- | ---: |
 | OnePlus 15 · A.22 → A.27 | 310 |
