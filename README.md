@@ -60,8 +60,8 @@
 | Realme GT8 Pro | `RMX5210_11.A.68_0680_20260512`|`RMX5210_11.A.71_0710_20260724`|12.04|
 
 镜像提取自第三方提供的完整 OTA 包或 payload：
-	- https://firmwarefile.com/
-	- https://danielspringer.at/
+- https://firmwarefile.com/
+- https://danielspringer.at/
 
 </details>
 
